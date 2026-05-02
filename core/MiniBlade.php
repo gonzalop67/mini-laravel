@@ -54,19 +54,35 @@ class MiniBlade
 
     protected function compile(string $code)
     {
-        // 1. Directiva @include('nombre_vista')
+        // 1. Directivas de Control: @if, @else, @foreach
+        // @if(condicion)
+        $code = preg_replace('/@if\((.*)\)/', '<?php if($1): ?>', $code);
+
+        // @else
+        $code = preg_replace('/@else/', '<?php else: ?>', $code);
+
+        // @endif
+        $code = preg_replace('/@endif/', '<?php endif; ?>', $code);
+
+        // @foreach($items as $item)
+        $code = preg_replace('/@foreach\((.*)\)/', '<?php foreach($1): ?>', $code);
+
+        // @endforeach
+        $code = preg_replace('/@endforeach/', '<?php endforeach; ?>', $code);
+
+        // 2. Directiva @include('nombre_vista')
         // Esto llamará al método includeView de la clase en tiempo de ejecución
         $code = preg_replace('/@include\(\'(.*)\'\)/', '<?php echo $this->includeView("$1", get_defined_vars()); ?>', $code);
 
-        // 2. Compilamos las variables {{ }}
+        // 3. Compilamos las variables {{ }}
         $code = preg_replace('/\{\{\s*(.*?)\s*\}\}/', '<?php echo htmlspecialchars((string)$1, ENT_QUOTES, "UTF-8"); ?>', $code);
 
-        // 3. Luego las secciones (para que guarden el código PHP de las variables ya traducido)
+        // 4. Luego las secciones (para que guarden el código PHP de las variables ya traducido)
         $code = preg_replace_callback('/@section\(\'(.*)\'\)(.*?)@endsection/s', function ($m) {
             return "<?php \$this->sections['$m[1]'] = <<<'EOT'\n$m[2]\nEOT;\n ?>";
         }, $code);
 
-        // 4. Después el resto
+        // 5. Después el resto
         $code = preg_replace('/@yield\(\'(.*)\'\)/', '<?php eval("?>".($this->sections["$1"] ?? "")); ?>', $code);
 
         // Directiva @extends

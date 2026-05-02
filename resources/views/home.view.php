@@ -7,10 +7,10 @@
             <div class="col-md-12 text-center">
                 <h1>Bienvenido a Mini Laravel</h1>
                 <p>Esta es una mini versión de Laravel.</p>
-                <?php if (isset($_SESSION['authenticated'])): ?>
+                @if(isset($_SESSION['authenticated']))
                     <p>Bienvenido: {{ $_SESSION['username'] }}</p>
-                    <a href="<?= BASE_URL ?>/users">Ver Usuarios</a>
-                <?php endif ?>
+                    <!-- <a href="<?= BASE_URL ?>/users">Ver Usuarios</a> -->
+                @endif
             </div>
         </div>
     </div>

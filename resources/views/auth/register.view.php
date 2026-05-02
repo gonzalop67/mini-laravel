@@ -1,5 +1,6 @@
-<?php include './../resources/views/includes/header.view.php' ?>
-<?php include './../resources/views/includes/navbar.view.php' ?>
+@extends('layout')
+
+@section('contenido')
 <div class="py-5">
     <div class="container d-flex justify-content-center align-items-center">
         <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
@@ -129,7 +130,7 @@
         data.append("password", password.value);
         // Llamar al método auth/login que verifica si existe el email y clave
         try {
-            let resp = await fetch("<?php echo BASE_URL ?>/auth/register", {
+            let resp = await fetch(base_url + "/auth/register", {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -137,7 +138,7 @@
             });
             json = await resp.json();
             if (!json.error) {
-                window.location = "<?php echo BASE_URL ?>/auth/dashboard";
+                window.location = base_url + "/auth/dashboard";
             } else {
                 //Existen errores de validación
 
@@ -151,7 +152,7 @@
                 var error = '<div class="alert alert-danger" role="alert">' +
                     '<p><i class="bi bi-ban"></i> Existen errores:</p>' +
                     '<ul>' +
-                    errors + 
+                    errors +
                     '</ul>' +
                     '</div>';
                 console.log(error);
@@ -163,4 +164,4 @@
         }
     }
 </script>
-<?php include './../resources/views/includes/footer.view.php' ?>
+@endsection

@@ -6,63 +6,78 @@ class Route
 {
     private static array $routes = [];
 
-    public static function get(string $uri, callable|array $callback, array $middlewares = [])
+    public static function get(string $uri, callable|array $callback, ?array $middlewares = [])
     {
         $uri = trim($uri, '/');
-        self::$routes['GET'][$uri] = $callback;
-        self::$routes['GET'][$uri]['middlewares'] = $middlewares;
+        self::$routes['GET'][$uri] = [
+            'callback'    => $callback,
+            'middlewares' => $middlewares
+        ];
     }
 
     public static function post(string $uri, callable|array $callback, array $middlewares = [])
     {
         $uri = trim($uri, '/');
-        self::$routes['POST'][$uri] = $callback;
-        self::$routes['POST'][$uri]['middlewares'] = $middlewares;
+        self::$routes['POST'][$uri] = [
+            'callback'    => $callback,
+            'middlewares' => $middlewares
+        ];
     }
 
     public static function dispatch()
     {
-        $uri = $_SERVER['REQUEST_URI'];
-
         // Limpiar la URI
-        $uri = parse_url($uri, PHP_URL_PATH);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-        $basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $basePath = str_replace('/public', '', $basePath);
+        $basePath = str_replace(['\\', '/public'], ['/', ''], dirname($_SERVER['SCRIPT_NAME']));
 
-        $uri = str_replace($basePath, '', $uri);
-        $uri = parse_url($uri, PHP_URL_PATH);
-
-        $uri = trim($uri, '/');
+        $uri = trim(str_replace($basePath, '', $uri), '/');
 
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // 1. Ejecutar los middlewares primero
-        foreach (self::$routes[$method][$uri]['middlewares'] as $middleware) {
-            $middleware();
-            // show($middleware);
+        if (!isset(self::$routes[$method])) {
+            echo "404 $method Not Found";
+            return;
         }
-        // die();
 
-        foreach (self::$routes[$method] as $route => $callback) {
+        foreach (self::$routes[$method] as $routePath => $routeData) {
+            // $routeData now contains ['callback' => ..., 'middlewares' => ...]
 
-            if (strpos($route, ':') !== false) {
-                $route = preg_replace('#:[a-zA-Z]+#', '([a-zA-Z0-9]+)', $route);
+            $pattern = $routePath;
+
+            if (strpos($routePath, ':') !== false) {
+                $pattern = preg_replace('#:[a-zA-Z]+#', '([a-zA-Z0-9]+)', $routePath);
             }
 
-            if (preg_match("#^$route$#", $uri, $matches)) {
+            if (preg_match("#^$pattern$#", $uri, $matches)) {
 
                 $params = array_slice($matches, 1);
 
-                if (is_callable($callback)) {
-                    $response = $callback(...$params);
+                // 1. Run Middlewares
+                if (!empty($routeData['middlewares'])) {
+                    foreach ($routeData['middlewares'] as $middleware) {
+                        // If middleware is a class string, instantiate it; if callable, call it
+                        if (is_string($middleware) && class_exists($middleware)) {
+                            $m = new $middleware();
+                            $m->handle(); // Assuming your middlewares have a handle() method
+                        } else if (is_callable($middleware)) {
+                            $middleware();
+                        }
+                    }
                 }
 
-                if (is_array($callback)) {
+                // 2. Execute Callback
+                $callback = $routeData['callback'];
+                $response = null;
+
+                if (is_callable($callback)) {
+                    $response = $callback(...$params);
+                } elseif (is_array($callback)) {
                     $controller = new $callback[0];
                     $response = $controller->{$callback[1]}(...$params);
                 }
 
+                // 3. Handle Response
                 if (is_array($response) || is_object($response)) {
                     header('Content-Type: application/json');
                     echo json_encode($response);

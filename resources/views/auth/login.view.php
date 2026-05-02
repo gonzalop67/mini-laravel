@@ -100,6 +100,8 @@
                 body: data,
             });
             json = await resp.json();
+            // Desplegar el loader image
+            document.querySelector("#img_loader").style.display = "none";
             if (!json.error) {
                 window.location = "<?php echo BASE_URL ?>/auth/dashboard";
             } else {

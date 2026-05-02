@@ -30,6 +30,12 @@
 
                             <?php if (isset($_SESSION['authenticated'])): ?>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="<?= BASE_URL ?>/users">Usuarios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?= BASE_URL ?>/contacts">Contactos</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/auth/logout">Salir</a>
                                 </li>
                             <?php endif ?>

@@ -29,11 +29,29 @@ class UserController extends Controller
 
     public function store()
     {
-        $password = $_POST['password'];
-        $hash_password = password_hash($password, PASSWORD_DEFAULT);
-        $_POST['password'] = $hash_password;
-        $this->userModel->create($_POST);
-        header('Location: ' . BASE_URL . '/users');
+        if ($this->userModel->validate($_POST)) {
+            $password = $_POST['password'];
+            $hash_password = password_hash($password, PASSWORD_DEFAULT);
+            $_POST['password'] = $hash_password;
+            $usuario = $this->userModel->create($_POST);
+            if (empty($usuario)) {
+                return json_encode([
+                    'error' => true,
+                    'errors' => [
+                        'db_error' => 'No se pudo insertar el usuario en la base de datos'
+                    ]
+                ]);
+            } else {
+                return json_encode([
+                    'error' => false
+                ]);
+            }
+        }
+
+        return json_encode([
+            'error' => true,
+            'errors' => $this->userModel->errors
+        ]);
     }
 
     public function edit($id)

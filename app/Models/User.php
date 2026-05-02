@@ -11,6 +11,12 @@ class User extends Model
     {
         $this->errors = [];
 
+        if (empty($data['username'])) {
+            $this->errors['username'] = "Username is required";
+        } else if ($this->exists('username', $data['username'])) {
+            $this->errors['username'] = "Ya existe el nombre de usuario";
+        }
+
         if (empty($data['email'])) {
             $this->errors['email'] = "Email is required";
         } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
@@ -21,10 +27,6 @@ class User extends Model
 
         if (empty($data['password'])) {
             $this->errors['password'] = "Password is required";
-        }
-
-        if (empty($data['username'])) {
-            $this->errors['username'] = "Username is required";
         }
 
         if (empty($this->errors)) {

@@ -20,9 +20,14 @@ Route::get('/auth/logout', [LoginController::class, 'logout']);
 Route::get('/auth/dashboard', [LoginController::class, 'dashboard'], [$authMiddleware]);
 
 Route::get('/contacts', [ContactController::class, 'index']);
+Route::get('/contacts/create', [ContactController::class, 'create']);
+Route::post('/contacts', [ContactController::class, 'store']);
+Route::get('/contacts/:id', [ContactController::class, 'show']);
+Route::get('/contacts/:id/edit', [ContactController::class, 'edit']);
+Route::post('/contacts/:id', [ContactController::class, 'update']);
+Route::post('/contacts/:id/delete', [ContactController::class, 'destroy']);
 
 Route::get('/showLoginForm', [LoginController::class, 'showLoginForm']);
-
 Route::get('/showregisterForm', [LoginController::class, 'showregisterForm']);
 
 Route::get('/users', [UserController::class, 'index'], [$authMiddleware]);
