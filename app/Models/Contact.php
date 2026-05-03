@@ -13,12 +13,16 @@ class Contact extends Model
 
         if (empty($data['name'])) {
             $this->errors['name'] = "El campo Nombre es obligatorio";
+        } else if ($this->exists('name', $data['name'])) {
+            $this->errors['name'] = "Ya existe el nombre de contacto";
         }
 
         if (empty($data['email'])) {
             $this->errors['email'] = "El campo Email es obligatorio";
         } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $this->errors['email'] = "El email introducido no es válido";
+        } else if ($this->exists('email', $data['email'])) {
+            $this->errors['email'] = "Ya existe el correo electrónico";
         }
 
         if (empty($data['phone'])) {

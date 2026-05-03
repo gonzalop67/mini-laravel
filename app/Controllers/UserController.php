@@ -21,6 +21,14 @@ class UserController extends Controller
         return $this->view('users.index', compact('users', 'title'));
     }
 
+    public function show(int $id)
+    {
+        $title = "Detalle del Contacto";
+        $contact = $this->userModel->find($id);
+
+        return $this->view('users.show', compact('title', 'contact'));
+    }
+
     public function create()
     {
         $title = "Nuevo Usuario";

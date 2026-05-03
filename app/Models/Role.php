@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Models;
+
+class Role extends Model
+{
+    protected string $table = 'roles';
+    protected array $fillable = ['name', 'description'];
+
+}

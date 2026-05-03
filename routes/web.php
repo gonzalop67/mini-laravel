@@ -9,6 +9,7 @@ require_once RUTA_APP . '/core/middlewares.php';
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
+use App\Controllers\RoleController;
 use App\Controllers\UserController;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -29,6 +30,8 @@ Route::post('/contacts/:id/delete', [ContactController::class, 'destroy']);
 
 Route::get('/showLoginForm', [LoginController::class, 'showLoginForm']);
 Route::get('/showregisterForm', [LoginController::class, 'showregisterForm']);
+
+Route::get('/roles', [RoleController::class, 'index'], [$authMiddleware]);
 
 Route::get('/users', [UserController::class, 'index'], [$authMiddleware]);
 Route::get('/users/create', [UserController::class, 'create'], [$authMiddleware]);

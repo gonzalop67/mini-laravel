@@ -65,7 +65,8 @@ class MiniBlade
         $code = preg_replace('/@endif/', '<?php endif; ?>', $code);
 
         // @foreach($items as $item)
-        $code = preg_replace('/@foreach\((.*)\)/', '<?php foreach($1): ?>', $code);
+        // Soporta tanto ($items as $item) como ($items as $key => $value)
+        $code = preg_replace('/@foreach\s*\((.*)\)/', '<?php foreach($1): ?>', $code);
 
         // @endforeach
         $code = preg_replace('/@endforeach/', '<?php endforeach; ?>', $code);

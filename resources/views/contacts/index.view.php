@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Lista de Contactos</h1>
 
-    <a href="{{ BASE_URL }}/contacts/create">Crear contacto</a>
+    <a href="{{ BASE_URL }}/contacts/create" class="btn btn-primary mb-3"><i class="bi bi-person-lines-fill"></i> Crear contacto</a>
 
     <ul>
         @foreach($contacts as $contact)
