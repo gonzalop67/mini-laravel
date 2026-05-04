@@ -12,7 +12,11 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
                         <ul class="navbar-nav ms-auto">
-                            
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= BASE_URL ?>/contacts">Contactos</a>
+                            </li>
+
                             <?php if (!isset($_SESSION['authenticated'])): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/showLoginForm">Login</a>
@@ -28,9 +32,6 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/roles">Roles</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="<?= BASE_URL ?>/contacts">Contactos</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/auth/logout">Salir</a>
