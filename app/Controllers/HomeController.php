@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\Contact;
-
 class HomeController extends Controller
 {
     public function __construct()

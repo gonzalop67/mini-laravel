@@ -28,8 +28,8 @@
                                 <td>{{ $value['name'] }}</td>
                                 <td class="text-center">
                                     <a href="{{ BASE_URL }}/admin/roles/assignPermissions.php?assign_permissions={{ $value['id'] }}" class="btn btn-sm btn-info" title="Permisos">
-                                        <!-- <i class="bi bi-person-fill-lock"></i> -->
-                                        <i class="bi bi-shield-lock-fill"></i>
+                                        <i class="bi bi-person-fill-lock"></i>
+                                        <!-- <i class="bi bi-shield-lock"></i> -->
                                     </a>
                                 </td>
                                 <td class="text-center">

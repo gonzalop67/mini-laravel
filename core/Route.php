@@ -33,6 +33,10 @@ class Route
 
         $uri = trim(str_replace($basePath, '', $uri), '/');
 
+        if (strpos($uri, '?')) {
+            $uri = substr($uri, 0, strpos($uri, '?'));
+        }
+
         $method = $_SERVER['REQUEST_METHOD'];
 
         if (!isset(self::$routes[$method])) {

@@ -64,6 +64,41 @@ class Model
         return $this->query->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function paginate($cant = 15)
+    {
+        $page = $_GET['page'] ?? 1;
+
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} LIMIT " . ($page - 1) * $cant . ",{$cant}";
+
+        $data = $this->query($sql)->get();
+
+        $total = $this->query("SELECT FOUND_ROWS() as total")->first()['total'];
+
+        // Limpiar la URI
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        $basePath = str_replace(['\\', '/public'], ['/', ''], dirname($_SERVER['SCRIPT_NAME']));
+
+        $uri = trim(str_replace($basePath, '', $uri), '/');
+
+        if (strpos($uri, '?')) {
+            $uri = substr($uri, 0, strpos($uri, '?'));
+        }
+
+        $last_page = ceil($total / $cant);
+
+        return [
+            'total' => $total,
+            'from' => ($page - 1) * $cant + 1,
+            'to' => ($page - 1) * $cant + count($data),
+            'current_page' => $page,
+            'last_page' => $last_page,
+            'next_page_url' => $page < $last_page ? "/" . $uri . '?page=' . $page + 1 : "/" . $uri . '?page=' . $last_page,
+            'prev_page_url' => $page > 1 ? "/" . $uri . '?page=' . $page - 1 : "/" . $uri . '?page=1',
+            'data' => $data,
+        ];
+    }
+
     // Consultas
     public function all()
     {

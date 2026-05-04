@@ -17,7 +17,7 @@ class ContactController extends Controller
     public function index()
     {
         $title = "Contactos";
-        $contacts = $this->contactModel->all();
+        $contacts = $this->contactModel->paginate(3);
         return $this->view('contacts.index', compact('title', 'contacts'));
     }
 
