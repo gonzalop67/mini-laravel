@@ -6,7 +6,9 @@ class MiniBlade
 {
     protected array $sections = [];
     protected mixed $layout = null;
-    protected mixed $viewsPath;
+    protected string $viewsPath;
+    protected string $cachePath;
+    protected bool $useCache = true;
 
     public function __construct(string $viewsPath)
     {
@@ -54,7 +56,9 @@ class MiniBlade
 
     protected function compile(string $code)
     {
-        // 1. Directivas de Control: @if, @else, @foreach
+        // 1. Directivas de Control: @for, @if, @else, @foreach
+        
+
         // @if(condicion)
         $code = preg_replace('/@if\((.*)\)/', '<?php if($1): ?>', $code);
 

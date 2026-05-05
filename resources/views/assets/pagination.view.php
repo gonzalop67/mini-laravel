@@ -13,7 +13,7 @@
 
                 <?php for ($i = 1; $i <= $$paginate['last_page']; $i++): ?>
                     <li class="page-item">
-                        <a class="page-link <?= $$paginate['current_page'] == $i ? 'active' : '' ?>" href="{{ BASE_URL }}/contacts?page={{ $i }}">{{ $i }}</a>
+                        <a class="page-link <?= $$paginate['current_page'] == $i ? 'active' : '' ?>" href="{{ BASE_URL }}/contacts?page={{ $i }}<?= isset($_GET['search']) ? "&search={$_GET['search']}" : "" ?>">{{ $i }}</a>
                     </li>
                 <?php endfor ?>
 
