@@ -16,13 +16,16 @@ class ContactController extends Controller
 
     public function index()
     {
+        // return $this->contactModel->where('id', '>', 1)
+        //                           ->orderBy('id', 'DESC')
+        //                           ->paginate(3);
         $title = "Contactos";
         if (isset($_GET['search'])) {
             $contacts = $this->contactModel->where('name', 'LIKE', '%' . $_GET['search'] . '%')->paginate(3);
         } else {
             $contacts = $this->contactModel->paginate(3);
         }
-        
+
         return $this->view('contacts.index', compact('title', 'contacts'));
     }
 

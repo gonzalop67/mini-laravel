@@ -22,6 +22,8 @@ class Model
     protected $data = [];
     protected string $params = "";
 
+    protected string $orderBy = "";
+
     public array $errors      = [];
 
     public function __construct()
@@ -47,6 +49,8 @@ class Model
             }
 
             $stmt = $this->connection->prepare($sql);
+            // echo "SQL: " . $sql;
+            // echo "Params Count: " . count($data);
             $stmt->bind_param($params, ...$data);
             $stmt->execute();
 
@@ -58,9 +62,26 @@ class Model
         return $this;
     }
 
+    public function orderBy(string $column, $order = 'ASC')
+    {
+        if (empty($this->orderBy)) {
+            $this->orderBy = " ORDER BY {$column} {$order}";
+        } else {
+            $this->orderBy .= ", {$column} {$order}";
+        }
+
+        return $this;
+    }
+
     public function first()
     {
         if (empty($this->query)) {
+            if (empty($this->sql)) {
+                $this->sql = "SELECT * FROM {$this->table}";
+            }
+
+            $this->sql .= $this->orderBy;
+            
             $this->query($this->sql, $this->data, $this->params);
         }
 
@@ -70,6 +91,15 @@ class Model
     public function get()
     {
         if (empty($this->query)) {
+            if (empty($this->sql)) {
+                $this->sql = "SELECT * FROM {$this->table}";
+            }
+
+            $this->sql .= $this->orderBy;
+
+            // Para depurar
+            // die($this->sql);
+
             $this->query($this->sql, $this->data, $this->params);
         }
 
@@ -85,7 +115,10 @@ class Model
 
             $data = $this->query($sql, $this->data, $this->params)->get();
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} LIMIT " . ($page - 1) * $cant . ",{$cant}";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} " . ($this->orderBy ?? '') . " LIMIT " . ($page - 1) * $cant . ",{$cant}";
+
+            // die($sql);
+
             $data = $this->query($sql)->get();
         }
 
@@ -137,10 +170,13 @@ class Model
             $operator = "=";
         }
 
-        $this->sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} WHERE {$column} {$operator} ?";
-        $this->data = [$value];
+        if (empty($this->sql)) {
+            $this->sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} WHERE {$column} {$operator} ?";
+        } else {
+            $this->sql .= " AND {$column} {$operator} ?";
+        }
 
-        // $this->query($sql, [$value]);
+        $this->data[] = $value;
 
         return $this;
     }
