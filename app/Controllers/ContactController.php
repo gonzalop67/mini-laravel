@@ -19,6 +19,12 @@ class ContactController extends Controller
         // return $this->contactModel->where('id', '>', 1)
         //                           ->orderBy('id', 'DESC')
         //                           ->paginate(3);
+
+        // return $this->contactModel
+        //     ->select('id', 'name', 'email')
+        //     ->orderBy('id')
+        //     ->first();
+
         $title = "Contactos";
         if (isset($_GET['search'])) {
             $contacts = $this->contactModel->where('name', 'LIKE', '%' . $_GET['search'] . '%')->paginate(3);

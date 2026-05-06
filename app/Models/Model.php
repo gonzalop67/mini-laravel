@@ -18,9 +18,9 @@ class Model
     protected mysqli $connection;
     protected mixed $query = null;
 
-    protected ?string $sql = null;
-    protected $data = [];
-    protected string $params = "";
+    protected string $select = "*";
+    protected string $where;
+    protected array $values = [];
 
     protected string $orderBy = "";
 
@@ -62,10 +62,17 @@ class Model
         return $this;
     }
 
+    public function select(...$columns)
+    {
+        $this->select = implode(', ', $columns);
+
+        return $this;
+    }
+
     public function orderBy(string $column, $order = 'ASC')
     {
         if (empty($this->orderBy)) {
-            $this->orderBy = " ORDER BY {$column} {$order}";
+            $this->orderBy = "{$column} {$order}";
         } else {
             $this->orderBy .= ", {$column} {$order}";
         }
@@ -76,13 +83,21 @@ class Model
     public function first()
     {
         if (empty($this->query)) {
-            if (empty($this->sql)) {
-                $this->sql = "SELECT * FROM {$this->table}";
+
+            $sql = "SELECT {$this->select} FROM {$this->table}";
+
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
             }
 
-            $this->sql .= $this->orderBy;
-            
-            $this->query($this->sql, $this->data, $this->params);
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
+
+            // Para depurar
+            // return $sql;
+
+            $this->query($sql, $this->values);
         }
 
         return $this->query->fetch_assoc();
@@ -91,16 +106,21 @@ class Model
     public function get()
     {
         if (empty($this->query)) {
-            if (empty($this->sql)) {
-                $this->sql = "SELECT * FROM {$this->table}";
+
+            $sql = "SELECT {$this->select} FROM {$this->table}";
+
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
             }
 
-            $this->sql .= $this->orderBy;
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
 
             // Para depurar
-            // die($this->sql);
+            // return $sql;
 
-            $this->query($this->sql, $this->data, $this->params);
+            $this->query($sql, $this->values);
         }
 
         return $this->query->fetch_all(MYSQLI_ASSOC);
@@ -110,16 +130,24 @@ class Model
     {
         $page = $_GET['page'] ?? 1;
 
-        if ($this->sql) {
-            $sql = $this->sql . " LIMIT " . ($page - 1) * $cant . ",{$cant}";
+        if (empty($this->query)) {
 
-            $data = $this->query($sql, $this->data, $this->params)->get();
-        } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} " . ($this->orderBy ?? '') . " LIMIT " . ($page - 1) * $cant . ",{$cant}";
+            $sql = "SELECT {$this->select} FROM {$this->table}";
 
-            // die($sql);
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
+            }
 
-            $data = $this->query($sql)->get();
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
+
+            $sql .= " LIMIT " . ($page - 1) * $cant . ",{$cant}";
+
+            // Para depurar
+            // return $sql;
+
+            $data = $this->query($sql, $this->values)->get();
         }
 
 
@@ -170,13 +198,13 @@ class Model
             $operator = "=";
         }
 
-        if (empty($this->sql)) {
-            $this->sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} WHERE {$column} {$operator} ?";
+        if (isset($this->where) && !empty($this->where)) {
+            $this->where .= " AND {$column} {$operator} ?";
         } else {
-            $this->sql .= " AND {$column} {$operator} ?";
+            $this->where = "{$column} {$operator} ?";
         }
 
-        $this->data[] = $value;
+        $this->values[] = $value;
 
         return $this;
     }

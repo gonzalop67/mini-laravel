@@ -6,7 +6,7 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
                 <li class="page-item">
-                    <a class="page-link" href="{{ BASE_URL . $$paginate['prev_page_url'] }}" aria-label="Previous">
+                    <a class="page-link" href="{{ BASE_URL . $$paginate['prev_page_url'] }}<?= isset($_GET['search']) ? "&search={$_GET['search']}" : "" ?>" aria-label="Previous">
                         <span aria-hidden="true">&lt;</span>
                     </a>
                 </li>
@@ -18,7 +18,7 @@
                 <?php endfor ?>
 
                 <li class="page-item">
-                    <a class="page-link" href="{{ BASE_URL . $$paginate['next_page_url'] }}" aria-label="Next">
+                    <a class="page-link" href="{{ BASE_URL . $$paginate['next_page_url'] }}<?= isset($_GET['search']) ? "&search={$_GET['search']}" : "" ?>" aria-label="Next">
                         <span aria-hidden="true">&gt;</span>
                     </a>
                 </li>
