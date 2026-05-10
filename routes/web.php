@@ -4,11 +4,12 @@
 
 use Core\Route;
 
-require_once RUTA_APP . '/core/middlewares.php';
+require_once RUTA_APP . '/Core/middlewares.php';
 
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
 use App\Controllers\LoginController;
+use App\Controllers\PermissionController;
 use App\Controllers\RoleController;
 use App\Controllers\UserController;
 
@@ -33,8 +34,15 @@ Route::get('/showregisterForm', [LoginController::class, 'showregisterForm']);
 
 Route::get('/roles', [RoleController::class, 'index'], [$authMiddleware]);
 
+Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
+Route::get('/permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);
+Route::post('/permissions', [PermissionController::class, 'store'], [$authMiddleware]);
+Route::get('/permissions/:id/edit', [PermissionController::class, 'edit']);
+Route::post('/permissions/:id', [PermissionController::class, 'update']);
+
 Route::get('/users', [UserController::class, 'index'], [$authMiddleware]);
 Route::get('/users/create', [UserController::class, 'create'], [$authMiddleware]);
 Route::post('/users', [UserController::class, 'store'], [$authMiddleware]);
+
 
 Route::dispatch();

@@ -255,8 +255,18 @@ class Model
 
         $sql = "UPDATE {$this->table} SET {$fields} WHERE id = ?";
 
-        $values = array_values($data);
+        $values = [];
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->fillable)) {
+                $values[] = "{$value}";
+            }
+        }
+
         $values[] = $id;
+
+        // show($values);
+        // die();
 
         $this->query($sql, $values);
 

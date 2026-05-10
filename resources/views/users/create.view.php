@@ -107,7 +107,7 @@
     });
 
     function validarUsername(username) {
-        const reg_nombres = /^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{5,64})$/i;
+        const reg_nombres = /^([a-zA-Z0-9 ñáéíóúÑÁÉÍÓÚ]{5,64})$/i;
         return reg_nombres.test(username);
     }
 
@@ -127,10 +127,7 @@
         // Desplegar el loader image
         document.querySelector("#img_loader").style.display = "block";
         // Obtener todos los campos a enviar mediante FormData
-        const data = new FormData();
-        data.append("username", username.value);
-        data.append("email", email.value);
-        data.append("password", password.value);
+        const data = new FormData(form);
         // Llamar al método store del controlador UserController que inserta el nuevo usuario en la BD
         try {
             let resp = await fetch(base_url + "/users", {

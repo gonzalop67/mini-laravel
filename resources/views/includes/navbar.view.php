@@ -34,6 +34,9 @@
                                     <a class="nav-link" href="<?= BASE_URL ?>/roles">Roles</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="<?= BASE_URL ?>/permissions">Permisos</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/auth/logout">Salir</a>
                                 </li>
                             <?php endif ?>

@@ -16,7 +16,7 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>N</th>
+                            <th>#</th>
                             <th>Role name</th>
                             <th colspan="3" class="text-center">Action</th>
                         </tr>
