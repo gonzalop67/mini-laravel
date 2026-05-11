@@ -33,6 +33,12 @@ Route::get('/showLoginForm', [LoginController::class, 'showLoginForm']);
 Route::get('/showregisterForm', [LoginController::class, 'showregisterForm']);
 
 Route::get('/roles', [RoleController::class, 'index'], [$authMiddleware]);
+Route::get('/roles/create', [RoleController::class, 'create'], [$authMiddleware]);
+Route::post('/roles', [RoleController::class, 'store'], [$authMiddleware]);
+Route::get('/roles/:id/edit', [RoleController::class, 'edit'], [$authMiddleware]);
+Route::get('/roles/:id/permissions', [RoleController::class, 'permissions']);
+Route::post('/roles/:id/permissions', [RoleController::class, 'updatePermissions']);
+Route::post('/roles/:id', [RoleController::class, 'update']);
 
 Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
 Route::get('/permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);

@@ -1,6 +1,4 @@
 <?php
-session_start(); // start session
-
 // define global constants
 
 //Ruta de la aplicación

@@ -185,6 +185,29 @@ class Model
         return $this->query($sql)->get();
     }
 
+    /**
+     * Simula el pluck de Laravel
+     * @param string $value Columna que queremos obtener
+     * @param string|null $key Columna opcional para usar como clave
+     */
+    public function pluck($value, $key = null)
+    {
+        $columns = $key ? "$key, $value" : $value;
+        $sql = "SELECT $columns FROM {$this->table}";
+
+        $data = $this->query($sql)->get();
+
+        if (empty($data)) return [];
+
+        // Si $key es nulo, usamos array_column solo con 2 parámetros
+        if (is_null($key)) {
+            return array_column($data, $value);
+        }
+
+        // Si $key tiene valor, usamos los 3 parámetros para el array asociativo
+        return array_column($data, $value, $key);
+    }
+
     public function find(int $id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = ?";
@@ -264,9 +287,6 @@ class Model
         }
 
         $values[] = $id;
-
-        // show($values);
-        // die();
 
         $this->query($sql, $values);
 

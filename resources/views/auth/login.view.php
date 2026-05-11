@@ -33,7 +33,7 @@
     </div>
 </div>
 <script>
-    const base_url = "<?php echo BASE_URL; ?>";
+    const base_url = "{{ BASE_URL }}";
 
     const form = document.getElementById("frmLogin");
 
@@ -93,7 +93,7 @@
         data.append("password", password.value);
         // Llamar al método auth/login que verifica si existe el email y clave
         try {
-            let resp = await fetch("<?php echo BASE_URL ?>/auth/login", {
+            let resp = await fetch(base_url + "/auth/login", {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -103,7 +103,7 @@
             // Desplegar el loader image
             document.querySelector("#img_loader").style.display = "none";
             if (!json.error) {
-                window.location = "<?php echo BASE_URL ?>/auth/dashboard";
+                window.location = base_url + "/auth/dashboard";
             } else {
                 //No existe el usuario
                 var error = '<div class="alert alert-danger" role="alert">' +

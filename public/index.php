@@ -1,11 +1,18 @@
 <?php
 
-// Punto de entrada de la aplicación mini-Laravel
+// Punto de entrada de la aplicación SIAE_2025
+session_start(); // start session
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Archivo de constantes
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../core/helpers.php';
+
+// echo RUTA_APP;
+
+require_once __DIR__ . '/../Core/helpers.php';
 
 // Autoloader
 require_once __DIR__ . '/../autoload.php';

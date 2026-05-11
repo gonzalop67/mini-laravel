@@ -27,13 +27,12 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $value['name'] }}</td>
                                 <td class="text-center">
-                                    <a href="{{ BASE_URL }}/admin/roles/assignPermissions.php?assign_permissions={{ $value['id'] }}" class="btn btn-sm btn-info" title="Permisos">
+                                    <a href="{{ BASE_URL }}/roles/{{ $value['id'] }}/permissions" class="btn btn-sm btn-info" title="Permisos">
                                         <i class="bi bi-person-fill-lock"></i>
-                                        <!-- <i class="bi bi-shield-lock"></i> -->
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ BASE_URL }}/admin/roles/roleForm.php?edit_role={{ $value['id'] }}" class="btn btn-sm btn-success" title="Editar">
+                                    <a href="{{ BASE_URL }}/roles/{{ $value['id'] }}/edit" class="btn btn-sm btn-success" title="Editar">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
                                 </td>
