@@ -3,21 +3,31 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
+use App\Models\RoleUser;
+use App\Models\RolePermission;
 
 class LoginController extends Controller
 {
     protected User $userModel;
+    protected Role $roleModel;
+    protected RoleUser $roleUserModel;
+    protected RolePermission $rolePermissionModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
         $this->userModel = new User;
+        $this->roleModel = new Role;
+        $this->roleUserModel = new RoleUser;
+        $this->rolePermissionModel = new RolePermission;
     }
 
     public function showLoginForm()
     {
         $title = "Login Form";
-        return $this->view('auth.login', compact('title'));
+        $roles = $this->roleModel->orderBy('name')->get();
+        return $this->view('auth.login', compact('title', 'roles'));
     }
 
     public function showregisterForm()
@@ -30,16 +40,46 @@ class LoginController extends Controller
     {
         $email = $_POST['email'];
         $password = $_POST['password'];
+        $rol_id = $_POST['rol_id'];
 
         $usuario = $this->userModel->where('email', $email)->first();
 
         if ($usuario && password_verify($password, $usuario['password'])) {
-            $_SESSION['authenticated'] = true;
-            $_SESSION['username'] = $usuario['username'];
-            return json_encode([
-                'error' => false,
-                'usuario' => $usuario
-            ]);
+            // Verificar si el perfil ingresado pertenece al usuario
+            $usuario_id = $usuario['id'];
+
+            $rolUsuario = $this->roleUserModel
+                ->where('usuario_id', $usuario_id)
+                ->where('rol_id', $rol_id)
+                ->first();
+
+            if (!empty($rolUsuario)) {
+                // ASEGÚRATE DE QUE session_start() se ejecutó antes
+                if (session_status() === PHP_SESSION_NONE) session_start();
+
+                $_SESSION['authenticated'] = true;
+                $_SESSION['username'] = $usuario['username'];
+
+                $permissions = $this->rolePermissionModel->getPermissionsByRoleId($rol_id);
+
+                // $_SESSION['permisos'] = [];
+
+                // foreach ($permissions as $key => $value) {
+                //     $_SESSION['permisos'][] = $value['slug'];
+                // }
+
+                $_SESSION['permisos'] = array_column($permissions, 'slug');
+
+                return json_encode([
+                    'error' => false,
+                    'usuario' => $usuario
+                ]);
+            } else {
+                return json_encode([
+                    'error' => true,
+                    'mensaje' => 'El Usuario no tiene asignado el rol seleccionado.' // Quité el nivel "errors"
+                ]);
+            }
         } else {
             return json_encode([
                 'error' => true,

@@ -8,15 +8,27 @@
 
             <form id="frmLogin" action="" method="POST" autocomplete="off">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="email" placeholder="name@example.com" autocomplete="username" required>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" autocomplete="username" required>
                     <label for="email"><i class="bi bi-envelope-fill"></i> Correo electrónico</label>
                     <p id="error-email" class="invalid-feedback"></p>
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="password" placeholder="Contraseña" autocomplete="current-password" required>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" autocomplete="current-password" required>
                     <label for="password"><i class="bi bi-person-fill-lock"></i> Contraseña</label>
                     <p id="error-password" class="invalid-feedback"></p>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <select class="form-select" name="rol_id" id="rol_id">
+                        <option value="">Seleccione...</option>
+                        <!-- Aquí van los roles -->
+                        @foreach ($roles as $rol)
+                            <option value="{{ $rol['id'] }}">{{ $rol['name'] }}</option>
+                        @endforeach
+                    </select>
+                    <label for="rol_id"><i class="bi bi-person-fill-gear"></i> Rol</label>
+                    <p id="error-rol_id" class="invalid-feedback"></p>
                 </div>
 
                 <div id="img_loader" class="mb-3" style="display:none;text-align:center;">
@@ -88,9 +100,7 @@
         // Desplegar el loader image
         document.querySelector("#img_loader").style.display = "block";
         // Obtener todos los campos a enviar mediante FormData
-        const data = new FormData();
-        data.append("email", email.value);
-        data.append("password", password.value);
+        const data = new FormData(form);
         // Llamar al método auth/login que verifica si existe el email y clave
         try {
             let resp = await fetch(base_url + "/auth/login", {

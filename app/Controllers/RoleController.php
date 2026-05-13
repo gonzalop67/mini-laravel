@@ -5,12 +5,14 @@ namespace App\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Permission;
+use App\Models\RolePermission;
 
 class RoleController extends Controller
 {
     protected Role $roleModel;
     protected User $userModel;
     protected Permission $permissionModel;
+    protected RolePermission $rolePermissionModel;
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class RoleController extends Controller
         $this->roleModel = new Role;
         $this->userModel = new User;
         $this->permissionModel = new Permission;
+        $this->rolePermissionModel = new RolePermission;
     }
 
     public function index()
@@ -103,5 +106,18 @@ class RoleController extends Controller
         $rolePermissions = $this->roleModel->getPermissionIds($id);
 
         return $this->view('roles.permissions', compact('rol', 'permissions', 'rolePermissions'));
+    }
+
+    public function updatePermissions(int $id)
+    {
+        // $id es el id del rol
+        $permissionIds = $_POST['permissions'];
+        $this->rolePermissionModel->sync($id, $permissionIds);
+
+        // Mensaje de éxito
+        $_SESSION['mensaje'] = "Permisos actualizados satisfactoriamente.";
+        $_SESSION['tipo'] = "success";
+        $_SESSION['icono'] = "check";
+        redireccionar('/roles');
     }
 }

@@ -69,6 +69,6 @@ class Role extends Model
         $data = $this->query($sql, [$roleId])->get();
 
         // Aquí es donde simulamos el pluck('id')->toArray()
-        return array_column($data, 'permission_id');
+        return array_column($data, 'permiso_id');
     }
 }

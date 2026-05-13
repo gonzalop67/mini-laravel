@@ -13,10 +13,6 @@
 
                         <ul class="navbar-nav ms-auto">
 
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?= BASE_URL ?>/contacts">Contactos</a>
-                            </li>
-
                             <?php if (!isset($_SESSION['authenticated'])): ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/showLoginForm">Login</a>
@@ -27,15 +23,27 @@
                             <?php endif ?>
 
                             <?php if (isset($_SESSION['authenticated'])): ?>
+                                <?php if (tiene_permiso('contactos')): ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="<?= BASE_URL ?>/users">Usuarios</a>
+                                    <a class="nav-link" href="<?= BASE_URL ?>/contacts">Contactos</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="<?= BASE_URL ?>/roles">Roles</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="<?= BASE_URL ?>/permissions">Permisos</a>
-                                </li>
+                                <?php endif; ?>
+                                <!-- Módulo de Usuarios (Solo con permiso 'usuarios') -->
+                                <?php if (tiene_permiso('usuarios')): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?= BASE_URL ?>/users">Usuarios</a>
+                                    </li>
+                                <?php endif; ?>
+                                <?php if (tiene_permiso('roles')): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?= BASE_URL ?>/roles">Roles</a>
+                                    </li>
+                                <?php endif; ?>
+                                <?php if (tiene_permiso('permisos')): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="<?= BASE_URL ?>/permissions">Permisos</a>
+                                    </li>
+                                <?php endif; ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="<?= BASE_URL ?>/auth/logout">Salir</a>
                                 </li>

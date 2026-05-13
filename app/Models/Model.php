@@ -132,7 +132,7 @@ class Model
 
         if (empty($this->query)) {
 
-            $sql = "SELECT {$this->select} FROM {$this->table}";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS {$this->select} FROM {$this->table}";
 
             if (isset($this->where) && !empty($this->where)) {
                 $sql .= " WHERE {$this->where}";
@@ -145,7 +145,7 @@ class Model
             $sql .= " LIMIT " . ($page - 1) * $cant . ",{$cant}";
 
             // Para depurar
-            // return $sql;
+            // echo $sql;
 
             $data = $this->query($sql, $this->values)->get();
         }

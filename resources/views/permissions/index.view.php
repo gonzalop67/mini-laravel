@@ -17,7 +17,8 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Permission name</th>
+                            <th>Nombre</th>
+                            <th>Slug</th>
                             <th colspan="2" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -25,7 +26,8 @@
                         @foreach ($permissions as $key => $value)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $value['clave'] }}</td>
+                                <td>{{ $value['name'] }}</td>
+                                <td>{{ $value['slug'] }}</td>
                                 <td class="text-center">
                                     <a href="{{ BASE_URL }}/permissions/{{ $value['id'] }}/edit" class="btn btn-sm btn-success" title="Editar">
                                         <i class="bi bi-pencil-fill"></i>

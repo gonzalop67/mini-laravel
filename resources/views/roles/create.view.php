@@ -158,7 +158,7 @@
     });
 
     function validarRol(rol) {
-        const regex = /^[A-Za-z0-9_-]{5,30}$/;
+        const regex = /^[a-zA-Z0-9\s]{5,30}$/;
         return regex.test(rol);
     }
 

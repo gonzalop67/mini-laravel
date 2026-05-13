@@ -4,9 +4,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 text-center">
-            <h1>Nuevo Permiso</h1>
-            <a href="<?= BASE_URL ?>/users">Lista de Permisos</a>
-            <h2>Ingresar nuevo Permiso</h2>
+            <a href="<?= BASE_URL ?>/permissions">Lista de Permisos</a>
+            <h2>Ingresar Permiso</h2>
         </div>
     </div>
     <div class="row">
@@ -14,13 +13,18 @@
         <div class="col-4">
             <form id="frmInsert" action="" method="POST">
                 <div class="form-group mb-3">
-                    <label for="clave">Nombre del Permiso</label>
-                    <input type="text" class="form-control" name="clave" id="clave" placeholder="Ingrese nuevo nombre de permiso" required>
-                    <p id="error-clave" class="invalid-feedback"></p>
+                    <label for="name">Nombre del Permiso</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Ingrese nombre del permiso" required>
+                    <p id="error-name" class="invalid-feedback"></p>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="slug">Slug del Permiso</label>
+                    <input type="text" class="form-control" name="slug" id="slug" placeholder="Ingrese slug del permiso" required>
+                    <p id="error-slug" class="invalid-feedback"></p>
                 </div>
                 <div class="form-group mb-3">
                     <label for="descripcion">Descripción del Permiso</label>
-                    <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese nuevo nombre de permiso" required>
+                    <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese descripción del permiso" required>
                     <p id="error-descripcion" class="invalid-feedback"></p>
                 </div>
 
@@ -42,11 +46,63 @@
 
     const form = document.getElementById("frmInsert");
 
-    const clave = document.getElementById("clave");
+    const name = document.getElementById("name");
+    const inputSlug = document.getElementById("slug");
     const descripcion = document.getElementById("descripcion");
 
     const mensaje = document.getElementById("mensaje");
     const img_loader = document.getElementById("img_loader");
+
+    const generarSlug = () => {
+        nombre = name.value;
+        // 1. Eliminar espacios al inicio y final
+        let slug = nombre.trim();
+
+        // 2. Convertir a minúsculas
+        slug = slug.toLowerCase();
+
+        // 3. Eliminar acentos y caracteres especiales mapeando
+        slug = slug.replace(/[àáäâèéëêìíïîòóöôùúüûñç]/g, function(match) {
+            return {
+                à: "a",
+                á: "a",
+                ä: "a",
+                â: "a",
+                è: "e",
+                é: "e",
+                ë: "e",
+                ê: "e",
+                ì: "i",
+                í: "i",
+                ï: "i",
+                î: "i",
+                ò: "o",
+                ó: "o",
+                ö: "o",
+                ô: "o",
+                ù: "u",
+                ú: "u",
+                ü: "u",
+                û: "u",
+                ñ: "n",
+                ç: "c",
+            } [match];
+        });
+
+        // 4. Reemplazar caracteres no permitidos (letras, números, guiones y espacios) por un guion
+        slug = slug.replace(/[^a-z0-9 -]/g, "");
+
+        // 5. Reemplazar espacios múltiples y guiones por un solo guion
+        slug = slug.replace(/[\s-]+/g, "-");
+
+        // 6. Eliminar guiones al inicio o al final
+        slug = slug.replace(/^-+|-+$/g, "");
+
+        inputSlug.value = slug;
+    };
+
+    name.addEventListener("blur", generarSlug);
+    name.addEventListener("keyup", generarSlug);
 
     // Escuchar el evento submit
     form.addEventListener('submit', function(event) {
@@ -55,55 +111,69 @@
         // Elimino algún mensaje de error previo
         document.querySelector("#mensaje").innerHTML = "";
 
-        const clave_value = clave.value.trim();
+        const name_value = name.value.trim();
+        const slug_value = inputSlug.value.trim();
         const descripcion_value = descripcion.value.trim();
 
-        if (clave_value == "" || descripcion_value == "") {
-            if (clave_value == "") {
-                clave.classList.add("is-invalid");
-                document.getElementById("error-clave").innerHTML = "El campo Nombre del Permiso es obligatorio.";
+        if (name_value == "" || slug_value == "" || descripcion_value == "") {
+            if (name_value == "") {
+                name.classList.add("is-invalid");
+                document.getElementById("error-name").innerHTML = "El campo Nombre del Rol es obligatorio.";
             } else {
-                clave.classList.remove("is-invalid");
-                document.getElementById("error-clave").innerHTML = "";
+                name.classList.remove("is-invalid");
+                document.getElementById("error-name").innerHTML = "";
+            }
+
+            if (slug_value == "") {
+                inputSlug.classList.add("is-invalid");
+                document.getElementById("error-slug").innerHTML = "El campo Slug del Rol es obligatorio.";
+            } else {
+                inputSlug.classList.remove("is-invalid");
+                document.getElementById("error-slug").innerHTML = "";
             }
 
             if (descripcion_value == "") {
                 descripcion.classList.add("is-invalid");
                 document.getElementById("error-descripcion").innerHTML = "El campo Descripción del Permiso es obligatorio.";
             } else {
-                clave.classList.remove("is-invalid");
+                descripcion.classList.remove("is-invalid");
                 document.getElementById("error-descripcion").innerHTML = "";
             }
-        } else if (clave_value.length < 5) {
+        } else if (name_value.length < 5) {
             clave.classList.add("is-invalid");
-            document.getElementById("error-clave").innerHTML = "El campo Nombre del Permiso debe tener al menos 5 caracteres.";
+            document.getElementById("error-name").innerHTML = "El campo Nombre del Permiso debe tener al menos 5 caracteres.";
+        } else if (slug_value.length < 5) {
+            inputSlug.classList.add("is-invalid");
+            document.getElementById("error-slug").innerHTML = "El campo Slug del Rol debe tener al menos 5 caracteres.";
         } else if (descripcion_value.length < 5) {
             descripcion.classList.add("is-invalid");
             document.getElementById("error-descripcion").innerHTML = "El campo Descripción del Permiso debe tener al menos 5 caracteres.";
-        } else if (!validarNombrePermiso(clave_value)) {
-            clave.classList.add("is-invalid");
-            document.getElementById("error-clave").innerHTML = "Por favor ingrese solo caracteres alfabéticos en minúsculas y guión entre 5 y 64 caracteres.";
+        } else if (!validarNombrePermiso(name_value)) {
+            name.classList.add("is-invalid");
+            document.getElementById("error-name").innerHTML = "Por favor ingrese solo caracteres alfanuméricos y espacios en blanco entre 5 y 30 caracteres.";
         } else {
             registrar_permiso();
         }
     });
 
     function validarNombrePermiso(nombre) {
-        const regex = /^[a-z]+(?:-[a-z]+)*$/;
+        const regex = /^[a-zA-Z0-9\s]{5,30}$/;
         return regex.test(nombre);
     }
 
     async function registrar_permiso() {
         // Eliminar todos los mensajes de error
-        clave.classList.remove("is-invalid");
-        document.getElementById("error-clave").innerHTML = "";
+        name.classList.remove("is-invalid");
+        document.getElementById("error-name").innerHTML = "";
+        inputSlug.classList.remove("is-invalid");
+        document.getElementById("error-slug").innerHTML = "";
         descripcion.classList.remove("is-invalid");
         document.getElementById("error-descripcion").innerHTML = "";
         // Desplegar el loader image
         document.querySelector("#img_loader").style.display = "block";
         // Obtener todos los campos a enviar mediante FormData
         const data = new FormData(form);
-        // Llamar al método store del controlador PermissionController que inserta el nuevo permiso en la BD
+        // Llamar al método store del controlador PermissionController que inserta el permiso en la BD
         try {
             let resp = await fetch(base_url + "/permissions", {
                 method: "POST",

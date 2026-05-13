@@ -3,4 +3,4 @@
 
 @yield('contenido')
 
-@include('includes/footer')
+@include('includes.footer')
