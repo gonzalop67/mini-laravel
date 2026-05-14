@@ -35,4 +35,13 @@ class User extends Model
 
         return false;
     }
+
+    public function getRoleIds(string $userId)
+    {
+        $sql = "SELECT rol_id FROM usuario_rol WHERE usuario_id = ?";
+        $data = $this->query($sql, [$userId])->get();
+
+        // Aquí es donde simulamos el pluck('id')->toArray()
+        return array_column($data, 'rol_id');
+    }
 }

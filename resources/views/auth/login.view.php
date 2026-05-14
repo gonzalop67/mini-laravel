@@ -6,15 +6,15 @@
         <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
             <h4 class="text-center mb-4">Iniciar Sesión</h4>
 
-            <form id="frmLogin" action="" method="POST" autocomplete="off">
+            <form id="frmLogin" action="" method="POST">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" autocomplete="username" required>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
                     <label for="email"><i class="bi bi-envelope-fill"></i> Correo electrónico</label>
                     <p id="error-email" class="invalid-feedback"></p>
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" autocomplete="current-password" required>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
                     <label for="password"><i class="bi bi-person-fill-lock"></i> Contraseña</label>
                     <p id="error-password" class="invalid-feedback"></p>
                 </div>

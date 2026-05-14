@@ -16,9 +16,9 @@ class ContactController extends Controller
 
     public function index()
     {
-        $search = isset($_GET['search']) ? $_GET['search'] : "";
-
         $title = "Contactos";
+
+        $search = isset($_GET['search']) ? $_GET['search'] : "";
         
         if ($search !== "") {
             $contacts = $this->contactModel->where('name', 'LIKE', '%' . $_GET['search'] . '%')->paginate(3);

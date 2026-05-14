@@ -56,48 +56,37 @@ class MiniBlade
 
     protected function compile(string $code)
     {
-        // 1. Directivas de Control: @for, @if, @else, @foreach
-        
-
-        // @if(condicion)
-        $code = preg_replace('/@if\((.*)\)/', '<?php if($1): ?>', $code);
-
-        // @else
-        $code = preg_replace('/@else/', '<?php else: ?>', $code);
-
-        // @endif
-        $code = preg_replace('/@endif/', '<?php endif; ?>', $code);
-
-        // @foreach($items as $item)
-        // Soporta tanto ($items as $item) como ($items as $key => $value)
-        $code = preg_replace('/@foreach\s*\((.*)\)/', '<?php foreach($1): ?>', $code);
-
-        // @endforeach
-        $code = preg_replace('/@endforeach/', '<?php endforeach; ?>', $code);
-
-        // 2. Directiva @include('nombre_vista')
-        // Esto llamará al método includeView de la clase en tiempo de ejecución
-        $code = preg_replace('/@include\(\'(.*)\'\)/', '<?php echo $this->includeView("$1", get_defined_vars()); ?>', $code);
-
-        // 3. Compilamos las variables {{ }}
+        // 1. Compilar variables {{ }} primero para evitar conflictos con directivas
         $code = preg_replace('/\{\{\s*(.*?)\s*\}\}/', '<?php echo htmlspecialchars((string)$1, ENT_QUOTES, "UTF-8"); ?>', $code);
 
-        // 4. Luego las secciones (para que guarden el código PHP de las variables ya traducido)
-        $code = preg_replace_callback('/@section\(\'(.*)\'\)(.*?)@endsection/s', function ($m) {
-            return "<?php \$this->sections['$m[1]'] = <<<'EOT'\n$m[2]\nEOT;\n ?>";
+        // 2. Directivas de Control con soporte para paréntesis anidados
+        $code = preg_replace('/@if\s*\((.*)\)/', '<?php if($1): ?>', $code);
+        $code = preg_replace('/@else/', '<?php else: ?>', $code);
+        $code = preg_replace('/@endif/', '<?php endif; ?>', $code);
+
+        $code = preg_replace('/@foreach\s*\((.*)\)/', '<?php foreach($1): ?>', $code);
+        $code = preg_replace('/@endforeach/', '<?php endforeach; ?>', $code);
+
+        // 3. Directiva @include
+        $code = preg_replace('/@include\(\'(.*?)\'\)/', '<?php echo $this->includeView("$1", get_defined_vars()); ?>', $code);
+
+        // 4. Captura de secciones limpia usando buffers de salida
+        $code = preg_replace_callback('/@section\(\'(.*?)\'\)(.*?)@endsection/s', function ($m) {
+            return "<?php ob_start(); ?>" . $m[2] . "<?php \$this->sections['" . $m[1] . "'] = ob_get_clean(); ?>";
         }, $code);
 
-        // 5. Después el resto
-        $code = preg_replace('/@yield\(\'(.*)\'\)/', '<?php eval("?>".($this->sections["$1"] ?? "")); ?>', $code);
+        // 5. Renderizado de @yield directo (Sin eval secundario)
+        $code = preg_replace('/@yield\(\'(.*?)\'\)/', '<?php echo $this->sections["$1"] ?? ""; ?>', $code);
 
-        // Directiva @extends
-        $code = preg_replace_callback('/@extends\(\'(.*)\'\)/', function ($m) {
+        // 6. Directiva @extends
+        $code = preg_replace_callback('/@extends\(\'(.*?)\'\)/', function ($m) {
             $this->layout = $m[1];
             return '';
         }, $code);
 
         return $code;
     }
+
 
     protected function includeView(string $viewName, array $data): string
     {
