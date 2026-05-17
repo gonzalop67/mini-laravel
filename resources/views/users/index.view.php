@@ -13,7 +13,7 @@
             <nav class="navbar bg-light">
                 <div class="container-fluid">
                     <?php if (tiene_permiso('crear-usuario')): ?>
-                        <a href="<?= BASE_URL ?>/users/create" class="navbar-brand btn btn-primary btn-sm mb-3"><i class="bi bi-person-fill-add"></i> Nuevo Usuario</a>
+                        <a href="<?= BASE_URL ?>/users/create" class="navbar-brand btn btn-primary btn-sm mb-3" style="color: white"><i class="bi bi-person-fill-add"></i> Nuevo Usuario</a>
                     <?php endif; ?>
 
                     <form action="<?= BASE_URL ?>/users" class="d-flex" role="search">
@@ -75,7 +75,6 @@
                                     <?php if (tiene_permiso('eliminar-usuario')): ?>
                                         <button type="submit" class="btn btn-danger btn-sm item-delete" data-id="{{ $user['id'] }}" title="Eliminar Usuario"><i class="bi bi-trash"></i></button>
                                     <?php endif; ?>
-
                                 </div>
                             </td>
                         </tr>

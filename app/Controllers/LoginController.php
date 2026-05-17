@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\RoleUser;
+use App\Models\Institution;
 use App\Models\RolePermission;
 
 class LoginController extends Controller
@@ -12,6 +13,7 @@ class LoginController extends Controller
     protected User $userModel;
     protected Role $roleModel;
     protected RoleUser $roleUserModel;
+    protected Institution $institutionModel;
     protected RolePermission $rolePermissionModel;
 
     public function __construct()
@@ -20,6 +22,7 @@ class LoginController extends Controller
         $this->userModel = new User;
         $this->roleModel = new Role;
         $this->roleUserModel = new RoleUser;
+        $this->institutionModel = new Institution;
         $this->rolePermissionModel = new RolePermission;
     }
 
@@ -60,14 +63,13 @@ class LoginController extends Controller
                 $_SESSION['authenticated'] = true;
                 $_SESSION['username'] = $usuario['username'];
 
+                // Obtener los datos de la unidad educativa...
+                $institucion = $this->institutionModel->find(1);
+                
+                $_SESSION['nombreInstitucion'] = $institucion['nombre'];
+                $_SESSION['urlInstitucion'] = $institucion['url'];
+                
                 $permissions = $this->rolePermissionModel->getPermissionsByRoleId($rol_id);
-
-                // $_SESSION['permisos'] = [];
-
-                // foreach ($permissions as $key => $value) {
-                //     $_SESSION['permisos'][] = $value['slug'];
-                // }
-
                 $_SESSION['permisos'] = array_column($permissions, 'slug');
 
                 return json_encode([
